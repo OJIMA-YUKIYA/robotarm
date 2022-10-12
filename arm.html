@@ -21,17 +21,18 @@
 
     <body>
         <button onclick="connect_clicked();" style="width: 150px; height: 50px; margin: 10px"><font size="5">ReConnect</font></button><br>
-        
-
+        <div id="remote-videos">
+            <video id="robotarm_dummy_video" style="display: none;"></video>
+        </div>
         <main style="margin: 0; padding: 0;">
-            <div class="VelocityStatus" style="float: left; width: 50%; height: 250px; background-color: #ddd;">
-                Unitree A1 status <br>
+            <div class="RobotArmStatus" style="float: left; width: 50%; height: 250px; background-color: #ddd;">
+                Robot Arm status <br>
                 <font size="4">
                     <pre><div id="a1ss"></div></pre>
                 </font>
                 <br>
             </div>
-            <div class="SegwayStatusStamped" style="float: right; width: 50%; height: 250px; background-color: #eee;">
+            <div class="SegwayStatus" style="float: right; width: 50%; height: 250px; background-color: #eee;">
                 Segway RMP status <br>
                 <font size="4">
                     <pre><div id="sgss"></div></pre>
@@ -42,7 +43,19 @@
 
 		<!-- Babylon.js のレンダリング内容を表示するための Canvas タグ-->
 		<canvas id="renderCanvas" style="border: 3px solid gray; width: 100%; float: left; touch-action: none; display: inline-block;"></canvas>
+        <script type="text/javascript" src="./webrtc.js"></script>
         <script type="text/javascript">
+
+            let robotarm_recvonly = new localrecvonly('robotarm_dummy_video', "ws://192.168.10.49:8080/ws");
+
+            function connect_clicked() {
+                setTimeout(() => {
+                    robotarm_recvonly.connect();
+                }, 1000);
+            }
+
+            connect_clicked();
+
             /////////////////////////////////////////////////////////////////////////
 
 
@@ -65,7 +78,7 @@
             }
 
             const engine = createDefaultEngine(canvas);
-            
+
             let camera;
             let cameraFovDegree = 60;
 
@@ -111,10 +124,10 @@
                     front_arrow_cylinder.rotation = new BABYLON.Vector3(0, -Math.PI/2.0, 0)
                     front_arrow_cylinder.material = arrow_mat;
 
-                
+
 
                 scene.registerBeforeRender(function () {
-                    
+
                 });
 
                 scene.onPointerObservable.add((pointerInfo) => {
@@ -203,12 +216,12 @@
                                 let abuttonComponent = motionController.getComponent(xr_ids[3]);//a-button
                                 abuttonComponent.onButtonStateChangedObservable.add(() => {
                                     if (abuttonComponent.pressed) {
-                                    }   
+                                    }
                                 });
                                 let bbuttonComponent = motionController.getComponent(xr_ids[4]);//b-button
                                 bbuttonComponent.onButtonStateChangedObservable.add(() => {
                                     if (bbuttonComponent.pressed) {
-            
+
                                     }
                                 });
                             }
@@ -216,11 +229,11 @@
                                 const xr_ids = motionController.getComponentIds();
                                 let thumbstickComponent = motionController.getComponent(xr_ids[2]);
                                 thumbstickComponent.onAxisValueChangedObservable.add((axes) => {
-                        
+
                                 });
                                 let triggerComponent = motionController.getComponent(xr_ids[0]);//xr-standard-trigger
                                 triggerComponent.onButtonStateChangedObservable.add((event) => {
-                                
+
                                 });
                             }
                         });
@@ -230,11 +243,11 @@
                         camera.alpha = -Math.PI / 2;
                         camera.beta = Math.PI / 2;
                         if(state === BABYLON.WebXRState.IN_XR){
-                              
+
 
                         }
                         else if (state === BABYLON.WebXRState.NOT_IN_XR) {
-                            
+
                         }
                         console.log(state);
                     });
