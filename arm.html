@@ -47,13 +47,14 @@
         <script type="text/javascript">
 
             let robotarm_recvonly = new localrecvonly('robotarm_dummy_video', "ws://192.168.10.49:8080/ws");
-            
+
 
             function connect_clicked() {
                 setTimeout(() => {
                     robotarm_recvonly.connect();
                 }, 1000);
             }
+
 
             connect_clicked();
 
